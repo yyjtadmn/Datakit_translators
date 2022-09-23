@@ -1,0 +1,116 @@
+def emailHandle
+def buildDir
+def stageDir
+def BUILD_PROCESS_FLAG
+def DOWNLOAD_AGENT='pni6w2981_yyjtadmn_WINDOW'
+def TEST_AGENT='DATAKIT_pnlv6s485_yyjtadmn_test'
+def STAGE_AGENT='DATAKIT_pnlv6s485_yyjtadmn_test'
+
+pipeline {
+    agent any
+	parameters {
+		string(name: 'InteropRelease', defaultValue: 'Interop10', description : 'Use the latest IP from Interop release to start the process.')
+		string(name: 'DatakitPath', defaultValue: '//plm/pnnas/jtdev/datakit_translator', description : 'Path where Interop baseline will be downloaded for Datakit translators.')
+		string(name: 'StagePath', defaultValue: '/apps/JenkinsBase/stage/Datakit', description : 'Path where datakit_translator kits are to be staged.')
+		booleanParam(name: 'Deploy', defaultValue: false, description : 'Deploy staging directory contents to customer setup')
+		booleanParam(name: 'Share', defaultValue: false, description : 'Share the Package for testing')
+		
+	}
+stages {
+		
+	stage('CheckVersionAndDownload') {
+        agent { label "${DOWNLOAD_AGENT}" }
+        steps {
+		script{
+			echo  "checking if any new baseline for ${params.InteropRelease} is available for download."
+			bat """ ./Scripts/checkVersion_Download.bat ${params.InteropRelease} """
+	            }					
+            }
+        }
+
+	stage('Test') {
+        	agent { label "${TEST_AGENT}" }
+        	steps {
+			script{
+				echo "new baseline is available so starting the test for ${params.InteropRelease}."
+				//dir ("//plm/pnnas/ppic/Data_Exchange/from_Roma/jenkins/datakit")
+				dir ("./Scripts")
+				{
+                       	 		sh " /usr/bin/perl -w Datakit_interop.pl -b=${params.InteropRelease} -r=1 " 
+				}
+			}					
+            	}
+        }
+	stage('StageAndDeploy') {
+        	agent { label "${STAGE_AGENT}" }
+        	steps {
+			script{
+				echo  "Executing stage and deploy..."
+				buildDir="${params.DatakitPath}/Baseline_${params.InteropRelease}"
+				stageDir="${params.StagePath}/${params.InteropRelease}/Datakit_TranslatorWorker_${BUILD_TIMESTAMP}"
+				sh "chmod +x ./Scripts/stageAndDeployTranslatorWorkerUnit.sh "
+				result = sh(script: "./Scripts/stageAndDeployTranslatorWorkerUnit.sh ${buildDir} ${stageDir} 'Artifacts' ${params.Deploy}", returnStatus: true)
+                    		
+				if (result != 0) 
+				{ 
+				    echo "Skipping Stagging and deploy as no new baseline is available"
+				    BUILD_PROCESS_FLAG=false				    
+				} 
+				else 
+				{
+				    BUILD_PROCESS_FLAG=true
+				    if ("${params.Share}"=="true")
+				 	{
+					    echo "Sharing package at location- //plm/pnnas/ppic/Data_Exchange/HybridSaaS_Translation/For_testing/ "
+					    sh " cp -r ${stageDir} //plm/pnnas/ppic/Data_Exchange/HybridSaaS_Translation/For_testing/Baseline_${params.InteropRelease}/ "
+					}
+				
+				}
+				
+			}					
+            	}
+        }
+	stage('Purge Unit') {
+		agent { label "${STAGE_AGENT}" }
+		when {
+			expression { "${BUILD_PROCESS_FLAG}"=="true" }
+		}
+            	steps {
+			echo "Executing Purge Unit Path ..."
+		script{		
+			unitDir="${params.DatakitPath}/Baseline_${params.InteropRelease}"
+			echo "purge unit is ${buildDir}"
+			sh "chmod +x ./Scripts/purge.sh "
+			sh "./Scripts/purge.sh ${unitDir}"		
+		}					
+            }
+	}
+	stage('Purge Stage') {
+		agent { label "${STAGE_AGENT}" }
+		when {
+			expression { "${BUILD_PROCESS_FLAG}"=="true" }
+		}
+        	steps {
+			echo "Executing Purge Stagging Path ..."
+		script{		
+			sh "chmod +x ./Scripts/purge.sh "
+			sh "./Scripts/purge.sh ${params.StagePath}/${params.InteropRelease}"		
+		}					
+            }
+	}
+    }
+    post {
+		
+        success {
+            echo 'All tasks completed successfully.'
+        }
+	failure {
+		echo 'One or more stages have failed.'
+	}
+	always {
+		script{
+			echo  "send email always."
+		}					
+	}
+    }
+}
