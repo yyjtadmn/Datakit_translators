@@ -1,0 +1,28 @@
+#!/bin/ksh -f
+
+# @(#) swtojt
+# @(#) Copyright 2014 Siemens Product Lifecycle Management Software Inc.
+# @(#) This script sets env variables and runs the SE to JT translator
+
+if [ -z "${SW_JT_INSTALL}" ]; then
+  echo "SW_JT_INSTALL environment variable is not set"
+  echo "Please set this environment variable before running the translator"
+  echo "Exiting..."
+  exit 1
+fi
+
+APPNAME=${SW_JT_INSTALL}/jt_sw
+
+EAI_INSTALL=${SW_JT_INSTALL}
+export EAI_INSTALL
+
+LD_LIBRARY_PATH=${SW_JT_INSTALL}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH
+
+SW_SCHEMA=${SW_JT_INSTALL}/SWschema
+export SW_SCHEMA
+
+P_SCHEMA=${SW_JT_INSTALL}/P_SCHEMA
+export P_SCHEMA
+
+exec ${APPNAME} "-single_part" "-z" "${SW_JT_INSTALL}/etc/swtojt_multicad.config" "$@" 

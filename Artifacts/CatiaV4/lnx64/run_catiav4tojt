@@ -1,0 +1,22 @@
+#!/bin/ksh -f
+
+# @(#) catiav4tojt
+# @(#) Copyright 2014 Siemens Product Lifecycle Management Software Inc.
+# @(#) This script sets env variables and runs the CATIAV4 to JT translator
+
+if [ -z "${CATIAV4_JT_INSTALL}" ]; then
+  echo "CATIAV4_JT_INSTALL environment variable is not set"
+  echo "Please set this environment variable before running the translator"
+  echo "Exiting..."
+  exit 1
+fi
+
+APPNAME=${CATIAV4_JT_INSTALL}/jt_catiav4_d
+
+EAI_INSTALL=${CATIAV4_JT_INSTALL}
+export EAI_INSTALL
+
+LD_LIBRARY_PATH=${CATIAV4_JT_INSTALL}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH
+
+exec ${APPNAME} "-single_part" "$@" 

@@ -1,0 +1,22 @@
+#!/bin/ksh -f
+
+# @(#) Igestojt
+# @(#) Copyright 2014 Siemens Product Lifecycle Management Software Inc.
+# @(#) This script sets env variables and runs the IGES to JT translator
+
+if [ -z "${IGES_JT_INSTALL}" ]; then
+  echo "IGES_JT_INSTALL environment variable is not set"
+  echo "Please set this environment variable before running the translator"
+  echo "Exiting..."
+  exit 1
+fi
+
+APPNAME=${IGES_JT_INSTALL}/jt_iges_d
+
+EAI_INSTALL=${IGES_JT_INSTALL}
+export EAI_INSTALL
+
+LD_LIBRARY_PATH=${IGES_JT_INSTALL}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH
+
+exec ${APPNAME} "-single_part" "$@" 

@@ -1,0 +1,22 @@
+#!/bin/ksh -f
+
+# @(#) creotojt
+# @(#) Copyright 2014 Siemens Product Lifecycle Management Software Inc.
+# @(#) This script sets env variables and runs the CREO to JT translator
+
+if [ -z "${CREO_JT_INSTALL}" ]; then
+  echo "CREO_JT_INSTALL environment variable is not set"
+  echo "Please set this environment variable before running the translator"
+  echo "Exiting..."
+  exit 1
+fi
+
+APPNAME=${CREO_JT_INSTALL}/jt_creo_d
+
+EAI_INSTALL=${CREO_JT_INSTALL}
+export EAI_INSTALL
+
+LD_LIBRARY_PATH=${CREO_JT_INSTALL}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH
+
+exec ${APPNAME} "-single_part" "$@" 
