@@ -2,9 +2,9 @@ def emailHandle
 def buildDir
 def stageDir
 def BUILD_PROCESS_FLAG
-def DOWNLOAD_AGENT='pni6w2981_yyjtadmn_WINDOW'
-def TEST_AGENT='DATAKIT_pnlv6s485_yyjtadmn_test'
-def STAGE_AGENT='DATAKIT_pnlv6s485_yyjtadmn_test'
+def DOWNLOAD_AGENT='di2inpun1910wv0_yyjtadmn_windows'
+def TEST_AGENT='pnlv6s485_yyjtadmn_linux'
+def STAGE_AGENT='pnlv6s485_yyjtadmn_linux'
 
 pipeline {
     agent any
