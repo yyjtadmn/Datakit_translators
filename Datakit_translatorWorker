@@ -12,7 +12,7 @@ pipeline {
 		string(name: 'InteropRelease', defaultValue: 'Interop10', description : 'Use the latest IP from Interop release to start the process.')
 		string(name: 'DatakitPath', defaultValue: '//plm/pnnas/jtdev/datakit_translator', description : 'Path where Interop baseline will be downloaded for Datakit translators.')
 		string(name: 'StagePath', defaultValue: '/apps/JenkinsBase/stage/Datakit', description : 'Path where datakit_translator kits are to be staged.')
-		booleanParam(name: 'Deploy', defaultValue: false, description : 'Deploy staging directory contents to customer setup')
+		booleanParam(name: 'Deploy', defaultValue: false, description : 'Generate Deploy steps in a text file')
 		booleanParam(name: 'Share', defaultValue: false, description : 'Share the Package for testing')
 		
 	}
