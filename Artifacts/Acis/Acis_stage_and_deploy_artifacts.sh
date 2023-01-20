@@ -96,8 +96,10 @@ then
 	tar -czf $releaseLNXName.tar.gz TranslatorBinaries/ || { exit 1;}
 	
 	echo "curl -u opentools_bot:YL6MtwZ35 -T $releaseLNXName.tar.gz https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseLNXName/ || { exit 1;}"
+	echo "curl -u opentools_bot:YL6MtwZ35 -T $releaseLNXName.tar.gz https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseLNXName/">deployStep.txt
 
 	echo "curl -u opentools_bot:YL6MtwZ35 -T NXJT_Translator_README.txt https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseLNXName/ || { exit 1;}"
+	echo "curl -u opentools_bot:YL6MtwZ35 -T NXJT_Translator_README.txt https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseLNXName/">>deployStep.txt
 	cd -
 	
 	############################################
@@ -109,8 +111,10 @@ then
 	tar -czf $releaseWNTName.tar.gz TranslatorBinaries/ || { exit 1;}
 	
 	echo "curl -u opentools_bot:YL6MtwZ35 -T $releaseWNTName.tar.gz https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseWNTName/ || { exit 1;}"
+	echo "curl -u opentools_bot:YL6MtwZ35 -T $releaseWNTName.tar.gz https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseWNTName/">deployStep.txt
 
 	echo "curl -u opentools_bot:YL6MtwZ35 -T NXJT_Translator_README.txt https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseWNTName/ || { exit 1;}"
+	echo "curl -u opentools_bot:YL6MtwZ35 -T NXJT_Translator_README.txt https://artifacts.industrysoftware.automation.siemens.com/artifactory/generic-local/Opentools/PREVIEW/ACIS/$releaseWNTName/">>deployStep.txt
 	cd -
 else
 	echo "Deploy flag is set to false. Skipping deploy step..."
